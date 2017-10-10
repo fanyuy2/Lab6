@@ -41,11 +41,17 @@ public class FrontCompression {
             return "";
         }
 
-        /*
-         * Complete this function.
-         */
-
-        return "";
+        String[] lines = corpus.split("\n");
+        String compressedCorpus = "0,abc" + "\n";
+        for (int i = 1; i < lines.length; i++) {
+            int prefix = longestPrefix(lines[i - 1], lines[i]);
+            String nonPrefix = "";
+            for (int j = prefix + 1; j < lines[i].length(); j++) {
+                nonPrefix += lines[i].charAt(j);
+            }
+            compressedCorpus += prefix + "," + nonPrefix + "\n";
+        }
+        return compressedCorpus;
     }
 
     /**
@@ -64,11 +70,39 @@ public class FrontCompression {
             return "";
         }
 
-        /*
-         * Complete this function.
-         */
+        String[] lines = corpus.split("\n");
+        String[] decompressedCorpusArray = new String[lines.length];
+        String decompressedCorpus = "";
+        for (int i = 0; i < lines.length; i++) {
+            //System.out.println(lines[i]);
+            String nonPrefix = "";
+            int prefix = 0;
+            String inPrefix = "";
+            for (int j = lines[i].indexOf(",") + 1; j < lines[i].length(); j++) {
+                nonPrefix += lines[i].charAt(j);
+            }
+            for (int j = 0; j < lines[i].indexOf(","); j++) {
+                String prefixString = "";
+                prefixString += lines[i].charAt(j);
+                prefix = Integer.valueOf(prefixString);
+            }
+            //System.out.println(prefix);
+            System.out.println(nonPrefix);
+            if (i == 0) {
+                decompressedCorpusArray[i] = nonPrefix;
+            } else {
+                for (int j = 0; j < prefix - 1; j++) {
+                    inPrefix += decompressedCorpusArray[i - 1].charAt(j);
+                }
+                decompressedCorpusArray[i] = inPrefix + nonPrefix;
+                System.out.println(inPrefix);
+            }
 
-        return "";
+        }
+        for (int i = 0; i < decompressedCorpusArray.length; i++) {
+            decompressedCorpus += decompressedCorpusArray[i] + "\n";
+        }
+        return decompressedCorpus;
     }
 
     /**
@@ -79,10 +113,23 @@ public class FrontCompression {
      * @return the length of the common prefix between the two strings
      */
     private static int longestPrefix(final String firstString, final String secondString) {
-        /*
-         * Complete this function.
-         */
-        return 0;
+        String longerString, shorterString;
+        int count = 0;
+        if (firstString.length() < secondString.length()) {
+            longerString = secondString;
+            shorterString = firstString;
+        } else {
+            longerString = firstString;
+            shorterString = secondString;
+        }
+        for (int i = 0; i < shorterString.length(); i++) {
+            if (shorterString.charAt(i) == longerString.charAt(i)) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        return count;
     }
 
     /**
